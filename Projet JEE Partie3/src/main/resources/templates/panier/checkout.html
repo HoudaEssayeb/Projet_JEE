@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Informations de Livraison</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="bg-light">
+<div th:replace="~{_navbar :: navbar}"></div>
+
+<div class="container mt-5" style="max-width: 600px;">
+    <div class="card shadow border-0">
+        <div class="card-header bg-dark text-white text-center py-3">
+            <h4 class="mb-0">Coordonnées de Livraison</h4>
+        </div>
+        <div class="card-body p-4">
+            <p class="text-muted text-center">Veuillez vérifier ou compléter vos coordonnées avant la finalisation de votre commande.</p>
+
+            <form th:action="@{/panier/valider}" method="post">
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Nom Complet</label>
+                    <input type="text" name="nomComplet" th:value="${user.nomComplet}" class="form-control" required placeholder="Ex: Ahmed Alami">
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Adresse exacte de livraison</label>
+                    <textarea name="adresseLivraison" th:text="${user.adresseLivraison}" class="form-control" rows="3" required placeholder="N°, Rue, Quartier, Ville..."></textarea>
+                </div>
+
+                <div class="mb-4">
+                    <label class="form-label fw-bold">Numéro de Téléphone</label>
+                    <input type="tel" name="telephone" th:value="${user.telephone}" class="form-control" required placeholder="Ex: +212 600 000000">
+                </div>
+
+                <div class="d-grid gap-2">
+                    <button type="submit" class="btn btn-success btn-lg">Confirmer et Payer à la livraison</button>
+                    <a th:href="@{/panier}" class="btn btn-light">Modifier le panier</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+</body>
+</html>

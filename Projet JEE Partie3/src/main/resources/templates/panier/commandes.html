@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Mes Commandes</title>
+    <!-- Intégration de Bootstrap 5 pour un rendu propre et moderne -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="bg-light">
+
+<!-- Inclusion de ta barre de navigation globale -->
+<div th:replace="~{_navbar :: navbar}"></div>
+
+<div class="container mt-5" style="max-width: 1000px;">
+    <h2 class="mb-4">Mon historique de commandes</h2>
+
+    <!-- CAS 1 : L'utilisateur n'a aucune commande validée -->
+    <div th:if="${commandes == null or #lists.isEmpty(commandes)}" class="alert alert-info text-center py-5 shadow-sm bg-white">
+        <h5 class="text-muted mb-3">Vous n'avez pas encore passé de commande ferme.</h5>
+        <a class="btn btn-primary fw-bold" th:href="@{/articles}">Découvrir le Catalogue</a>
+    </div>
+
+    <!-- CAS 2 : Liste des commandes trouvées -->
+    <div th:if="${commandes != null and not #lists.isEmpty(commandes)}" class="card shadow-sm border-0 bg-white p-3">
+        <div class="table-responsive">
+            <table class="table table-hover mb-0 align-middle">
+                <thead class="table-dark">
+                <tr>
+                    <th class="ps-3">N° Commande</th>
+                    <th>Date de Validation</th>
+                    <th>Ligne de Commande</th>
+                    <th class="text-end pe-3">Montant Total</th>
+                </tr>
+                </thead>
+                <tbody>
+                <!-- Boucle sur chaque commande présente dans la liste transmise par le contrôleur -->
+                <tr th:each="cmd : ${commandes}">
+                    <!-- Affiche l'ID de la commande précédé d'un hashtag -->
+                    <td class="fw-bold ps-3 text-secondary" th:text="'#' + ${cmd.id}">#00</td>
+
+                    <td th:text="${cmd.dateCommande != null ? #temporals.format(cmd.dateCommande, 'dd/MM/yyyy HH:mm') : 'Date inconnue'}">16/05/2026</td>
+
+                    <td>
+                        <ul class="list-unstyled mb-0 sm-text" style="font-size: 0.9rem;">
+                            <li th:each="ligne : ${cmd.lignesCommande}" class="text-muted mb-1">
+                                • <span class="fw-semibold text-dark" th:text="${ligne.article.description}">Nom Article</span>
+                                (x<span th:text="${ligne.quantite}">1</span>)
+                                - <small th:text="${ligne.prixUnitaire} + ' DH'"></small>
+                            </li>
+                        </ul>
+                    </td>
+
+                    <!-- APPEL À TON GETTER JAVA : Appelle dynamiquement cmd.getTotalCommande() -->
+                    <td class="text-end pe-3 fw-bold text-success" th:text="${cmd.totalCommande} + ' DH'">
+                        0.00 DH
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- Optionnel : Script Bootstrap 5 JS si ta Navbar en a besoin pour les menus déroulants -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

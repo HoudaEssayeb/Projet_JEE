@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Gestion des Utilisateurs</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="bg-light">
+<div th:replace="~{_navbar :: navbar}"></div>
+
+<div class="container mt-5">
+    <!-- Messages d'alerte -->
+    <div th:if="${param.success == 'deleted'}" class="alert alert-success"> Utilisateur supprimé avec succès !</div>
+    <div th:if="${param.success == 'updated'}" class="alert alert-success"> Utilisateur mis à jour avec succès !</div>
+    <div th:if="${param.error == 'self_delete'}" class="alert alert-danger"> Erreur : Vous ne pouvez pas supprimer votre propre compte administrateur !</div>
+
+    <!-- À insérer juste au-dessus du tableau dans ta page liste-users.html -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>Gestion des comptes</h2>
+        <a th:href="@{/admin/users/nouveau}" class="btn btn-primary">Ajouter un Utilisateur</a>
+    </div>
+
+    <div class="card shadow-sm border-0">
+        <div class="card-header bg-dark text-white py-3">
+            <h4 class="mb-0"> Liste des Comptes Utilisateurs</h4>
+        </div>
+        <div class="card-body p-0">
+            <!-- Ajoute ce message d'erreur dans la zone des messages d'alerte -->
+            <div th:if="${param.error == 'username_exists'}" class="alert alert-danger"> Cet identifiant est déjà utilisé par un autre compte !</div>
+            <div th:if="${param.success == 'created'}" class="alert alert-success"> Nouvel utilisateur créé avec succès !</div>
+
+            <table class="table table-striped table-hover mb-0 align-middle">
+                <thead class="table-dark">
+                <tr>
+                    <th class="ps-3">ID</th>
+                    <th>Nom d'utilisateur</th>
+                    <th>Nom Complet</th>
+                    <th>Téléphone</th>
+                    <th>Rôle</th>
+                    <th class="text-end pe-3">Actions</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="u : ${users}">
+                    <td class="ps-3" th:text="${u.id}">1</td>
+                    <td class="fw-bold text-primary" th:text="${u.username}">Nom</td>
+                    <td th:text="${u.nomComplet != null ? u.nomComplet : 'Non renseigné'}">Détails</td>
+                    <td th:text="${u.telephone != null ? u.telephone : 'Non renseigné'}">06...</td>
+                    <td>
+                            <span th:text="${u.role}"
+                                  th:class="${u.role == 'ADMIN'} ? 'badge bg-danger' : 'badge bg-info text-dark'">ROLE</span>
+                    </td>
+                    <!-- COLONNE ACTIONS -->
+                    <td class="text-end pe-3">
+                        <div class="btn-group btn-group-sm">
+                            <a th:href="@{/admin/users/modifier/{id}(id=${u.id})}" class="btn btn-warning">Modifier</a>
+
+                            <form th:action="@{/admin/users/supprimer/{id}(id=${u.id})}" method="post">
+                                <button type="submit" class="btn btn-danger btn-sm">Supprimer</button>
+                            </form>
+                        </div>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+</body>
+</html>
